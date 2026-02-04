@@ -104,10 +104,10 @@ class KNearestNeighbor(object):
         ##### TODO #####    # x^2 + y^2 -2xy를 하고 sqrt를 하는 방식으로 진행한다
         X_square = np.sum(X**2, axis = 1)   # 각 값의 제곱값을 더해서 x^2을 만듬
         X_train_square = np.sum(self.X_train**2, axis = 1)  #각 값의 제곱값을 더해서 y^2을 만듬
-        dists2 = np.dot(X_square, np.transpose(X_train_square))
+        dists = np.dot(X_square, np.transpose(X_train_square))
         X_dot_X_train = np.dot(X, np.transpose(self.X_train))   # 둘을 내적해서 10000*50000짜리 xy 값들의 합을 만들어줌
-        dists2 = dists2 - 2 * X_dot_X_train
-        return dists2
+        dists = dists - 2 * X_dot_X_train   # x^2 + y^2 -2xy
+        return dists
 
     def predict_labels(self, dists, k=1):
         """
@@ -122,28 +122,13 @@ class KNearestNeighbor(object):
         - y: A numpy array of shape (num_test,) containing predicted labels for the
           test data, where y[i] is the predicted label for the test point X[i].
         """
-        num_test = dists.shape[0]
-        y_pred = np.zeros(num_test)
+        num_test = dists.shape[0]   # test 데이터 수
+        y_pred = np.zeros(num_test) # test 데이터 예측값
         for i in range(num_test):
-            # A list of length k storing the labels of the k nearest neighbors to
-            # the ith test point.
-            closest_y = []
-            #########################################################################
-            # TODO:                                                                 #
-            # Use the distance matrix to find the k nearest neighbors of the ith    #
-            # testing point, and use self.y_train to find the labels of these       #
-            # neighbors. Store these labels in closest_y.                           #
-            # Hint: Look up the function numpy.argsort.                             #
-            #########################################################################
-
-
-            #########################################################################
-            # TODO:                                                                 #
-            # Now that you have found the labels of the k nearest neighbors, you    #
-            # need to find the most common label in the list closest_y of labels.   #
-            # Store this label in y_pred[i]. Break ties by choosing the smaller     #
-            # label.                                                                #
-            #########################################################################
-
-
+            closest_y_index = np.argsort(dists[i])[:k]  # dists를 정렬해서 낮은 순서대로 index 저장, 앞 k개 슬라이싱
+            y_num = [0] * 10
+            for a in range(k):
+                x = self.y_train[closest_y_index[a]]
+                y_num[x] += 1
+            y_pred[i] = np.argsort(y_num)[-1]
         return y_pred
