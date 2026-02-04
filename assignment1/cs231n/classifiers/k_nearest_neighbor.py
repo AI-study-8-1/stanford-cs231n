@@ -126,9 +126,9 @@ class KNearestNeighbor(object):
         y_pred = np.zeros(num_test) # test 데이터 예측값
         for i in range(num_test):
             closest_y_index = np.argsort(dists[i])[:k]  # dists를 정렬해서 낮은 순서대로 index 저장, 앞 k개 슬라이싱
-            y_num = [0] * 10
+            y_num = [0] * 10    # knn의 투표 저장
             for a in range(k):
-                x = self.y_train[closest_y_index[a]]
-                y_num[x] += 1
-            y_pred[i] = np.argsort(y_num)[-1]
+                x = self.y_train[closest_y_index[a]]    # 가장 가까운 k개의 class를 뽑아옴
+                y_num[x] += 1   # 해당 class의 투표수 1 증가
+            y_pred[i] = np.argsort(y_num)[-1]   # 가장 높은 index를 예측값으로 설정
         return y_pred
