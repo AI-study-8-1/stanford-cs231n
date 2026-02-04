@@ -7,3 +7,4 @@
 
 ## TODO
 - assignment1 -> cs231n -> classifiers -> k_nearest_neighbor.py
+- assignment1 -> knn.ipynb
