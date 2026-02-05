@@ -102,11 +102,10 @@ class KNearestNeighbor(object):
         num_train = self.X_train.shape[0]
         dists = np.zeros((num_test, num_train))
         ##### TODO #####    # x^2 + y^2 -2xy를 하고 sqrt를 하는 방식으로 진행한다
-        X_square = np.sum(X**2, axis = 1)   # 각 값의 제곱값을 더해서 x^2을 만듬
-        X_train_square = np.sum(self.X_train**2, axis = 1)  #각 값의 제곱값을 더해서 y^2을 만듬
-        dists = np.dot(X_square, np.transpose(X_train_square))
+        X_square = np.sum(X**2, axis = 1).reshape(num_test, 1)   # 각 값의 제곱값을 더해서 x^2을 만듬
+        X_train_square = np.sum(self.X_train**2, axis = 1).reshape(num_train, 1).T  #각 값의 제곱값을 더해서 y^2을 만듬
         X_dot_X_train = np.dot(X, np.transpose(self.X_train))   # 둘을 내적해서 10000*50000짜리 xy 값들의 합을 만들어줌
-        dists = dists - 2 * X_dot_X_train   # x^2 + y^2 -2xy
+        dists = np.sqrt(X_square + X_train_square - 2 * X_dot_X_train)   # sqrt(x^2 + y^2 -2xy)
         return dists
 
     def predict_labels(self, dists, k=1):
